@@ -1,0 +1,685 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Notebook for lab activity - NLP Week 1 Session 2\n",
+    "\n",
+    "# Getting started with regular expressions\n",
+    "\n",
+    "If you haven't already, head over to [https://regex101.com/](https://regex101.com/) and try making some simple regular expressions. Make sure you use the \"Python\" option in the left menu under \"Flavor\". Try out the following types of regular expressions to see how they work:\n",
+    "\n",
+    "(You might find this cheat sheet helpful for reference: https://www.rexegg.com/regex-quickstart.html)\n",
+    "\n",
+    "* `abc`\n",
+    "* `[abc]`\n",
+    "* `[^abc]`\n",
+    "* `[a-z]`\n",
+    "* `.`\n",
+    "* `a+`\n",
+    "* `Hello, \\w+!`\n",
+    "* `Hello, (\\w+)!`\n",
+    "\n",
+    "Spend 5-10 minutes there, then return here to start playing with regexes in Python... "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Regular expressions in Python\n",
+    "\n",
+    "## Importing the re library\n",
+    "First, we need to import the \"re\" library, which provides the functionality for using basic regular expressions in Python. Execute the next block of code to do this (e.g., put your cursor in the block, then hit shift+enter). **You will need to execute this cell each new time you run this notebook (or any other notebook that uses this library).**"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import re"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Once you've executed that cell above, you'll see a bit of text to its left that will say something like \"In [1]\" or \"In [2]\". If it says \"In [ ]\" that means you have not executed it yet, so try again.\n",
+    "\n",
+    "# Part 1: The Basics\n",
+    "\n",
+    "## A bit about variables and printing in Python\n",
+    "In python, a **variable** is a thing that associates some **value** (like the number 3 or the text \"abc\", etc.) with a **name** (like \"bob\" or \"myVariable\" or \"heyYou123\") that allows you to refer to this value.\n",
+    "\n",
+    "The code below creates a new variable called heyYou123 and gives it the value of 15. (Why not?) Execute this next cell of code to make it happen.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 3,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "heyYou123 = 15"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can now do things like print the value of heyYou123 to the screen, by executing the following code:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "15\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(heyYou123)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Because heyYou123 has a value that is a number, we can also do things like add another number to it. Execute the following code to add 3 to this number:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "18"
+      ]
+     },
+     "execution_count": 5,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "heyYou123 + 3"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Notice that when you execute that code, Jupyter prints out the value 18. By default, if the last line of code in a cell in Jupyter produces some value, Jupyter will print it to the screen for you."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Creating a variable for your regular expression\n",
+    "Now let's make a new variable called \"reggie\" and use it to store a simple regular expression, which will match the text \"hi\". Execute the next cell to make this happen:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reggie = r\"hi\""
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Notice that we stuck an \"r\" at the beginning of our regular expression string above, to tell Python to interpret this string as \"raw\" text. This means we can use backslash '\\' characters freely in our regular expressions (e.g., using \\w to denote alphanumeric characters) without having to escape them. This will make life easier."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Using your regular expression to identify matching text\n",
+    "\n",
+    "### A bit about functions in Python \n",
+    "\n",
+    "In Python, we use **functions** to **do** things, like calculate a value, print something to the screen, draw something, etc. We \"call\" or \"execute\" a function by typing its name, followed by the ( ) characters. Often, we want a function to use the values of variables or other information to influence what it does. These variables or other information will appear inside the ( ) characters. These are called the function's **arguments** or **parameters**. For instance, the following code calls the `print()` function a few times with different arguments:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Hi!\n",
+      "123\n",
+      "This variable holds a string of text\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(\"Hi!\")\n",
+    "print(123)\n",
+    "msg = \"This variable holds a string of text\"\n",
+    "print(msg)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Using the `re.search` function to find matches to a regular expression\n",
+    "\n",
+    "Now, we'll call the function named `re.search` to apply this regular expression to a new string of text (specifically, the string \"hi, Rebecca\"). This function takes two arguments (separated by a comma): the first is the regular expression, the second is the text to search using the regular expression. Execute the following block of code to do this:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<re.Match object; span=(0, 2), match='hi'>"
+      ]
+     },
+     "execution_count": 8,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "re.search(reggie, \"hi, Rebecca\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "After you've executed the block above, you should see some new text appear. Specifically, you should see something like `<_sre.SRE_Match object; span=(0, 2), match='hi'>` . This text is the *output* of the function called `re.search`. Remember that, by default, if the last line of code in a Jupyter block produces some output, Jupyter will print this output to the screen for you just below the block.\n",
+    "\n",
+    "So what does this output mean?\n",
+    "1. The output is a special type of value called an \"object\"; specifically, it's a `_sre.SRE_Match` object. Don't worry about what this means, exactly, for now. The important thing to know is that a Python *object* stores some data and/or provides you with functions that allow you to inspect it or do other things -- i.e., it's both more complicated and more useful than just a number or a string of text, etc.\n",
+    "2. This object holds some information about what text matched the regular expression (i.e., the `match='hi'` bit, which we can also refer to as \"group 0\") as well as some information about *where* in the string we found a match (i.e., the `span=(0, 3)` bit tells us that the match begins at character 0 (i.e., the first character, since start counting from 0 in Python) and ends just before character 3 (the 4th character).\n",
+    "\n",
+    "\n",
+    "Note that the `re.search` function only returns an object if there is a match. If we try to run it on some text where there is no match, we just get no output, which you should see when you run the following block:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "re.search(reggie, \"some text that doesn't match\")"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Note that we used the variable \"reggie\" above to store our regular expression so that we could re-use it later. We can do the same thing with the string we're searching within, for instance making a new variable `stringToMatch`:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<re.Match object; span=(5, 7), match='hi'>"
+      ]
+     },
+     "execution_count": 10,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "stringToMatch = \".... hi, do I match?\"\n",
+    "re.search(reggie, stringToMatch)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In Jupyter, you can change the values of variables in later cells, long after you're created them. The following code changes the value of `reggie` to the regular expression `[abc]` and changes the value of stringToMatch to `123a456`, before testing whether reggie matches stringToMatch."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<re.Match object; span=(3, 4), match='a'>"
+      ]
+     },
+     "execution_count": 11,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "reggie = r\"[abc]\"\n",
+    "stringToMatch = \"123a456\"\n",
+    "re.search(reggie, stringToMatch)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Practice some basic regular expressions \n",
+    "\n",
+    "Using the cells below (and adding more cells if you'd like), try to craft and test out some regular expressions to do the following:\n",
+    "* Match the text \"goodbye\"\n",
+    "* Match any text that contains at least one digit\n",
+    "* Match any text that contains exactly 4 characters (of any type)\n",
+    "\n",
+    "You may want to use the documentation at https://regex101.com/ to refresh your memory of regular expression syntax. Make sure to use the Python \"flavor\" in the top left if you want to interactively try out your regular expressions before putting them into code below.\n",
+    "\n",
+    "Note that the cells below use \"#\" to insert **comments** into the code. These comments can contain any text after the `#` character; they're notes to yourself and anyone else reading the code. We recommend adding your own!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "<re.Match object; span=(30, 37), match='goodbye'>"
+      ]
+     },
+     "execution_count": 12,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Make and test a regular expression that matches \"goodbye\"\n",
+    "reggie = r\"goodbye\"\n",
+    "\n",
+    "stringToMatch = \"I said hello and then he said goodbye\"\n",
+    "re.search(reggie, stringToMatch)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 13,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Make and test a regular expression that matches text containing at least one digit\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 14,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Make and test a regular expression that matches text containing exactly 4 \n",
+    "# characters (of any type)\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Part 2: Getting more information about the matching text\n",
+    "\n",
+    "We can store our match object in a new variable in order to use its functions and learn more about the match. Execute the following code to do a new regular expression search and store the match in a variable called `m`."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 15,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reggie = r\"my name is .*\" # Will match text containing \"hi\" or \"hello\"\n",
+    "stringToMatch = \"Hello, my name is Mrs Dalloway\"\n",
+    "m = re.search(reggie, stringToMatch)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We can still print the default information about this match object, using the python `print` function like so:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 16,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "<re.Match object; span=(7, 30), match='my name is Mrs Dalloway'>\n"
+     ]
+    }
+   ],
+   "source": [
+    "print(m)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "But we can also do more useful things! For instance, we can grab the matching text itself."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 17,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'my name is Mrs Dalloway'"
+      ]
+     },
+     "execution_count": 17,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "m.group(0) #Group 0 is always the full matching text"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 18,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "matchingText = m.group(0) #We can also grab this matching text and stick it in a new variable to use later"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Recall that we can specify additional \"groups\" using ( and ), to grab text we care about. Here, we might want to grab the name of the person introducing themselves and store it in a variable. Let's edit the regular expression to add a group:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "reggie = r\"my name is (.*)\" #Now the characters after \"my name is \" will be a new group (specifically, group 1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we can ask \"m\" to tell us what group 1 is in stringToMatch:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "'Mrs Dalloway'"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "stringToMatch = \"Hello, my name is Mrs Dalloway\"\n",
+    "m = re.search(reggie, stringToMatch)\n",
+    "m.group(1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Even better, we can store this in a variable and use it later!"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Well hello there, Mrs Dalloway! Nice to meet you!\n"
+     ]
+    }
+   ],
+   "source": [
+    "stringToMatch = \"Hello, my name is Mrs Dalloway\"\n",
+    "m = re.search(reggie, stringToMatch)\n",
+    "theName = m.group(1) #store the matching group 1 in a new variable; let's call it theName\n",
+    "greeting = \"Well hello there, \" + theName + \"! Nice to meet you!\" #use theName to make a greeting and store it in a new variable\n",
+    "print(greeting) #print our greeting!"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In the code above, the \"+\" character is used to concatenate text, creating one long string of text that contains \"Well hello there, \" followed by the contents of the variable called `theName`, followed by the text \"! Nice to meet you!\". This new, long string of text is stored in a new variable called `greeting.` We can use the `print` function in Python to print this greeting to the screen."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Part 3: Creating a simple greeting bot\n",
+    "\n",
+    "The code below contains a new Python function. After we execute this cell, we can call this function to examine and respond to text input by a person (as you see in the following cell)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#Defines a new function called simpleBot. This function takes one argument, called msgText\n",
+    "def simpleBot(msgText):\n",
+    "    reg = r\"hello\" #define a new regular expression\n",
+    "    m = re.search(reg, msgText) #search for this expression in the msgText argument\n",
+    "    if m: #if the regex is found, execute the following indented lines: \n",
+    "        print(\"Hello back!\") #prints to the screen\n",
+    "        return #exits the function\n",
+    "    reg = r\"how are you?\" #if the regex above is not found, we continue executing here. This line sets reg to a new regex\n",
+    "    m = re.search(reg, msgText) #search for this new expression in the text from the user\n",
+    "    if m: #if this new regex is found, execute the following indented lines:\n",
+    "        print(\"I'm OK, how are you?\")\n",
+    "        return\n",
+    "    #you could continue to add code here. Anything at this indentation level is part of the function\n",
+    "    print(\"I didn't understand you!\")\n",
+    "    \n",
+    "#Anything aligned all the way left like this is outside of the function"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The following cells call this function using some different example strings"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 25,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Hello back!\n"
+     ]
+    }
+   ],
+   "source": [
+    "#calls the function on some text\n",
+    "simpleBot(\"hello\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "I didn't understand you!\n"
+     ]
+    }
+   ],
+   "source": [
+    "simpleBot(\"hi\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "I'm OK, how are you?\n"
+     ]
+    }
+   ],
+   "source": [
+    "simpleBot(\"how are you?\")"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "#If you want, you can use input() to get input from the user and store it in a variable. \\\n",
+    "#Try executing this code, then typing into the box:\n",
+    "myText = input()\n",
+    "simpleBot(myText)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Your task\n",
+    "\n",
+    "Your final task is to edit the code for `simpleBot` above to improve how it greets you. Can you make it more flexible - able to recognise and respond to more variations of greetings? Can you make it friendlier? Can you improve it in some other way?\n",
+    "\n",
+    "**TIP:** Each time you edit the function, you will **need to execute its cell using Shift+Return before you use the function again** to test it. Otherwise you'll continue to use the last version of the function.\n",
+    "\n",
+    "Insert some cells below for your testing of your new bot."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {
+    "collapsed": true
+   },
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "# Part 4: Want to do more?\n",
+    "\n",
+    "Choose one or more of the following to explore:\n",
+    "\n",
+    "## Regex golf\n",
+    "\n",
+    "Head to https://alf.nu/RegexGolf for a game that you play by crafting regular expressions.\n",
+    "\n",
+    "## Will\n",
+    "\n",
+    "Check out [Will](https://skoczen.github.io/will/), a Python library for creating simple chatbots using regular expressions.\n",
+    "\n",
+    "## ELIZA\n",
+    "\n",
+    "Try out an [interactive version of ELIZA](https://www.masswerk.at/elizabot/) and take a look at the JavaScript code (filled with regexes).\n"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.7"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 1
+}
