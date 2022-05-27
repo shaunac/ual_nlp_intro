@@ -4,7 +4,7 @@
    "cell_type": "markdown",
    "metadata": {},
    "source": [
-    "# Notebook for lab activity - NLP Week 1 Session 2\n",
+    "# Notebook for lab activity - NLP Week 3 Session 2\n",
     "\n",
     "# Getting started with regular expressions\n",
     "\n",
@@ -207,7 +207,7 @@
     }
    ],
    "source": [
-    "re.search(reggie, \"hi, Rebecca\")"
+    "re.search(reggie, \"hi, Clarissa\")"
    ]
   },
   {
